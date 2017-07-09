@@ -6,7 +6,8 @@
     "vendor-dir": "./vendor"
     },
     "require": {
-        "symfony/console": "^3.3"
+        "symfony/console": "^3.3",
+        "guzzlehttp/guzzle": "^6.2@dev"
     },
     "autoload": {
         "psr-4": {
