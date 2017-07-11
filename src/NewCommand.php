@@ -29,11 +29,15 @@ class NewCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('<comment>Crafting application...</comment>');
+
         $directory = getcwd() . '/' . $input->getArgument('name');
         $this->assertApplicationDoesNotExist($directory, $output);
 
         $this->download($zipFile = $this->makeFileName())
             ->extract($zipFile, $directory);
+
+        $this->cleanUp($zipFile);
 
         $output->writeln('<comment>Application ready!</comment>');
 
@@ -53,13 +57,19 @@ class NewCommand extends Command
         return getcwd() . 'laravel_' . md5(time() . uniqid()) . '.zip';
     }
 
+    private function cleanUp($zipFile){
+        @chmod($zipFile, 0777);
+        @unlink($zipFile);
+
+        return $this;
+    }
+
     private function download($zipFile)
     {
 
         $response = $this->client->request('GET', 'http://cabinet.laravel.com/latest.zip')->getBody();
         file_put_contents($zipFile, $response);
         return $this;
-        // http://cabinet.laravel.com/latest.zip
     }
 
     private function extract($zipFile, $directory)
